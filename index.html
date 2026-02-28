@@ -13,34 +13,29 @@
             padding: 16px 32px; position: absolute; bottom: 40px; left: 50%;
             transform: translateX(-50%); font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        #error-msg { position: absolute; top: 20%; width: 100%; text-align: center; display: none; }
     </style>
 </head>
 <body>
-
-    <div id="error-msg">Nessun modello specificato nell'URL.</div>
-
     <model-viewer id="viewer"
         ar ar-modes="scene-viewer quick-look" 
         ar-placement="floor"
-        camera-controls shadow-intensity="1.5"
+        camera-controls shadow-intensity="1"
         orientation="0deg -90deg 0deg" 
+        bounds="tight"
+        camera-target="auto"
         auto-rotate>
         <button slot="ar-button" class="ar-button">VEDI IN REALTÀ AUMENTATA</button>
     </model-viewer>
 
     <script>
-        // Legge il nome del file dall'URL (es: ?model=NOME.glb)
         const urlParams = new URLSearchParams(window.location.search);
         const modelName = urlParams.get('model');
         const viewer = document.getElementById('viewer');
 
         if (modelName) {
-            // Costruisce il link dinamico al file nel tuo repository
-            viewer.src = `https://manise78.github.io/I-AR-Models/${modelName}`;
+            viewer.src = `./${modelName}`;
         } else {
-            document.getElementById('error-msg').style.display = 'block';
-            viewer.style.display = 'none';
+            alert("Nessun modello specificato.");
         }
     </script>
 </body>
