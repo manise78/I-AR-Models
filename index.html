@@ -3,51 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizzatore AR Inventor - PLAN53B</title>
+    <title>Visualizzatore AR Inventor - FIX Orientamento</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        model-viewer { width: 100%; height: 100vh; background-color: #f5f5f5; }
-        
+        body { margin: 0; background-color: #f5f5f5; }
+        model-viewer { width: 100%; height: 100vh; }
         .ar-button {
-            background-color: #007bff;
-            border-radius: 30px;
-            border: none;
-            color: white;
-            padding: 16px 32px;
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            cursor: pointer;
-            font-size: 16px;
+            background-color: #007bff; border-radius: 30px; border: none;
+            color: white; padding: 16px 32px; position: absolute; bottom: 40px;
+            left: 50%; transform: translateX(-50%); font-weight: bold;
         }
-
-        /* Testo di aiuto mentre carica */
-        #progress-bar { width: 100%; height: 4px; background: #ccc; position: absolute; top: 0; }
     </style>
 </head>
 <body>
 
     <model-viewer 
         src="https://manise78.github.io/I-AR-Models/PLAN53B-FRAME-001.glb" 
-        ar 
-        ar-modes="scene-viewer quick-look" 
+        ar ar-modes="scene-viewer quick-look" 
         ar-placement="floor"
         camera-controls 
-        shadow-intensity="1.5" 
-        shadow-softness="1"
-        rotation="-90deg 0deg 0deg" 
-        auto-rotate
-        touch-action="pan-y"
-        alt="Modello 3D Telaio PLAN53B">
+        shadow-intensity="1" 
+        orientation="-90deg 0deg 0deg"
+        auto-rotate 
+        touch-action="pan-y">
         
         <button slot="ar-button" class="ar-button">
-            📦 VEDI NEL TUO AMBIENTE (AR)
+            📦 VEDI IN AR (SCALA 1:1)
         </button>
-
     </model-viewer>
 
 </body>
