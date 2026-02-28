@@ -1,41 +1,28 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizzatore AR Universale</title>
+    <title>Visualizzatore AR</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        body { margin: 0; background: #f5f5f5; font-family: sans-serif; }
-        model-viewer { width: 100%; height: 100vh; }
-        .ar-button {
-            background: #007bff; border-radius: 30px; border: none; color: white;
-            padding: 16px 32px; position: absolute; bottom: 40px; left: 50%;
-            transform: translateX(-50%); font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
+        body { margin: 0; }
+        model-viewer { width: 100vw; height: 100vh; background-color: #f0f0f0; }
     </style>
 </head>
 <body>
-    <model-viewer id="viewer"
-        ar ar-modes="scene-viewer quick-look" 
-        ar-placement="floor"
-        camera-controls shadow-intensity="1"
-        orientation="0deg -90deg 0deg" 
-        bounds="tight"
-        camera-target="auto"
-        auto-rotate>
-        <button slot="ar-button" class="ar-button">VEDI IN REALTÀ AUMENTATA</button>
+    <model-viewer id="viewer" src="" ar ar-modes="webxr scene-viewer quick-look" camera-controls touch-action="pan-y" shadow-intensity="1">
+        <div slot="ar-button" style="position: absolute; bottom: 16px; right: 16px;">
+            <button style="padding: 8px; border-radius: 4px; border: none; background: #007bff; color: white;">VEDI IN AR</button>
+        </div>
     </model-viewer>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const modelName = urlParams.get('model');
-        const viewer = document.getElementById('viewer');
-
-        if (modelName) {
-            viewer.src = `./${modelName}`;
+        const params = new URLSearchParams(window.location.search);
+        const model = params.get('model');
+        if (model) {
+            // Carica il modello direttamente dalla cartella root del repository
+            document.getElementById('viewer').src = model;
         } else {
-            alert("Nessun modello specificato.");
+            alert("Nessun modello specificato nell'URL.");
         }
     </script>
 </body>
