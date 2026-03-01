@@ -1,41 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AR Viewer</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        body { margin: 0; font-family: sans-serif; }
+        model-viewer { width: 100vw; height: 100vh; background-color: #f0f0f0; }
+        #status { position: absolute; top: 10px; left: 10px; z-index: 100; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    </style>
+</head>
 <body>
-    <div id="status" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-family: sans-serif; background: rgba(255,255,255,0.8); padding: 5px; border-radius: 5px;">
-        In attesa del modello...
-    </div>
+    <div id="status">Inizializzazione...</div>
 
-    <model-viewer id="viewer" 
-        ar ar-modes="webxr scene-viewer quick-look" 
-        camera-controls shadow-intensity="1" 
-        auto-rotate
-        style="width: 100vw; height: 100vh; background-color: #f0f0f0;">
-    </model-viewer>
+    <model-viewer id="viewer" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1" auto-rotate></model-viewer>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-    const model = params.get('model');
-    if (model) {
-        // Il "+ '?t=' + new Date().getTime()" serve a fregare la cache di GitHub
-        document.getElementById('viewer').src = model + "?t=" + new Date().getTime();
-        const viewer = document.getElementById('viewer');
         const status = document.getElementById('status');
+        const viewer = document.getElementById('viewer');
+        const params = new URLSearchParams(window.location.search);
+        const model = params.get('model');
 
-        if (model) {
-            status.innerText = "Caricamento: " + model;
-            // Forziamo il caricamento assoluto
-            const modelUrl = window.location.origin + window.location.pathname.replace('index.html', '') + model + "?t=" + new Date().getTime();
+        if (!model) {
+            status.innerHTML = "❌ Errore: Manca il nome del modello nell'URL.";
+        } else {
+            status.innerHTML = "🔍 Cerco il file: " + model;
+            
+            // Forziamo l'indirizzo assoluto per evitare dubbi
+            const modelUrl = window.location.origin + window.location.pathname.replace('index.html', '') + model + "?t=" + Date.now();
             
             viewer.src = modelUrl;
 
             viewer.addEventListener('load', () => {
-                status.style.display = 'none'; // Nascondi se ok
+                status.style.display = 'none';
+                console.log("Modello caricato con successo");
             });
 
             viewer.addEventListener('error', (ev) => {
-                status.innerHTML = "❌ Errore caricamento.<br>Verifica link: <a href='"+modelUrl+"'>Clicca qui</a>";
                 console.error(ev);
+                status.innerHTML = "❌ ERRORE DI CARICAMENTO!<br>" +
+                                 "File: <a href='" + modelUrl + "'>" + model + "</a><br>" +
+                                 "Controlla se il link sopra scarica il file. Se lo scarica, il problema è il visualizzatore.";
             });
-        } else {
-            status.innerText = "Nessun modello specificato.";
         }
     </script>
 </body>
+</html>
