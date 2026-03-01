@@ -1,22 +1,57 @@
-<model-viewer src="" id="viewer"
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualizzatore AR Inventor</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        body { margin: 0; font-family: sans-serif; }
+        model-viewer { width: 100%; height: 100vh; background-color: #f0f0f0; }
+        .ar-button {
+            background-color: #007bff;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<model-viewer id="viewer"
+              src=""
               ar
               ar-modes="webxr scene-viewer quick-look"
               camera-controls
               touch-action="pan-y"
               shadow-intensity="1">
+    <button slot="ar-button" class="ar-button">
+        VEDI IN REALTÀ AUMENTATA
+    </button>
 </model-viewer>
 
 <script>
 (function() {
     const viewer = document.getElementById('viewer');
 
-    // Prendi direttamente l'URL dal parametro passato nell'add-in
+    // Prendi direttamente l'URL dal parametro "url" passato dall'AddIn
     const urlParams = new URLSearchParams(window.location.search);
     const glbUrl = urlParams.get('url');
+
     if (!glbUrl) {
         alert('Nessun modello specificato.');
         return;
     }
+
+    // Imposta l'URL come src del viewer
     viewer.src = glbUrl;
 })();
 </script>
+
+</body>
+</html>
