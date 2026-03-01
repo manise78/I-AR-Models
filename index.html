@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AR Viewer</title>
+    <title>Visualizzatore AR</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; }
@@ -9,28 +9,21 @@
     </style>
 </head>
 <body>
-    <model-viewer id="viewer" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1" auto-rotate></model-viewer>
+    <model-viewer id="viewer" src="" ar ar-modes="webxr scene-viewer quick-look" camera-controls touch-action="pan-y" shadow-intensity="1">
+        <div slot="ar-button" style="position: absolute; bottom: 16px; right: 16px;">
+            <button style="padding: 12px; border-radius: 8px; border: none; background: #007bff; color: white; font-weight: bold;">VEDI IN AR</button>
+        </div>
+    </model-viewer>
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const modelName = params.get('model');
-        const viewer = document.getElementById('viewer');
-
-        if (modelName) {
-            // Carichiamo il file come dati grezzi (blob) per bypassare i blocchi di GitHub
-            fetch('./' + modelName + '?t=' + Date.now())
-                .then(response => {
-                    if (!response.ok) throw new Error();
-                    return response.blob();
-                })
-                .then(blob => {
-                    // Creiamo un URL locale che il visualizzatore accetta come "valido"
-                    const url = URL.createObjectURL(blob);
-                    viewer.src = url;
-                })
-                .catch(() => {
-                    console.error("Errore nel recupero del file.");
-                });
+        const model = params.get('model');
+        if (model) {
+            // Usiamo il percorso relativo semplice che funzionava ieri
+            // Aggiungiamo solo il timestamp per evitare che GitHub ti mostri il file vecchio
+            document.getElementById('viewer').src = model + "?t=" + Date.now();
+        } else {
+            alert("Nessun modello specificato.");
         }
     </script>
 </body>
