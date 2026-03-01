@@ -40,26 +40,32 @@
     </div>
 </model-viewer>
 
+<script type="module">
+import '@google/model-viewer/dist/model-viewer.min.js';
+</script>
+
 <script>
-(function() {
-    const params = new URLSearchParams(window.location.search);
-    const modelFile = params.get('model');
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const modelFile = params.get('model');
 
-    if (!modelFile) {
-        alert('Nessun modello specificato.');
-        return;
-    }
+  if (!modelFile) {
+    alert('Nessun modello specificato.');
+    return;
+  }
 
-    const viewer = document.getElementById('viewer');
+  const viewer = document.getElementById('viewer');
 
-    // Se i file .glb sono nella stessa cartella di index.html
-    const modelUrl = `${modelFile}?t=${Date.now()}`;
-    viewer.src = modelUrl;
+  // URL assoluto: /I-AR-Models/nomefile.glb
+  const base = `${window.location.origin}/I-AR-Models/`;
+  const modelUrl = `${base}${modelFile}?t=${Date.now()}`;
 
-    viewer.addEventListener('error', () => {
-        alert('Impossibile caricare il modello: ' + modelFile);
-        console.error('Errore caricamento modello', modelUrl);
-    });
+  viewer.src = modelUrl;
+
+  viewer.addEventListener('error', () => {
+    alert('Impossibile caricare il modello: ' + modelFile);
+    console.error('Errore caricamento modello', modelUrl);
+  });
 })();
 </script>
 
