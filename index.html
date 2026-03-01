@@ -43,14 +43,16 @@
 (function() {
     const viewer = document.getElementById('viewer');
     const urlParams = new URLSearchParams(window.location.search);
-    const glbUrl = urlParams.get('url');
+    const fileName = urlParams.get('file');
 
-    if (!glbUrl) {
+    if (!fileName) {
         alert('Nessun modello specificato.');
         return;
     }
 
-    viewer.src = decodeURIComponent(glbUrl);
+    // Costruisci URL completo verso il .glb su GitHub Pages
+    const glbUrl = `https://manise78.github.io/I-AR-Models/${fileName}`;
+    viewer.src = glbUrl;
 
     viewer.addEventListener('load', () => {
         console.log("Modello caricato con successo!");
@@ -58,7 +60,7 @@
     });
 
     viewer.addEventListener('error', () => {
-        alert("Errore caricamento modello 3D: " + decodeURIComponent(glbUrl));
+        alert("Errore caricamento modello 3D: " + glbUrl);
     });
 })();
 </script>
