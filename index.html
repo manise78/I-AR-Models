@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Visualizzatore AR</title>
+    <!-- Carica la libreria Model‑Viewer -->
     <script type="module"
             src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js">
     </script>
@@ -12,12 +13,14 @@
     </style>
 </head>
 <body>
+    <!-- Viewer con AR abilitata -->
     <model-viewer id="viewer"
                   ar
                   ar-modes="webxr scene-viewer quick-look"
                   camera-controls
                   touch-action="pan-y"
                   shadow-intensity="1">
+        <!-- Pulsante personalizzato -->
         <div slot="ar-button"
              style="position:absolute;bottom:16px;right:16px;">
             <button style="
@@ -34,6 +37,7 @@
 
     <script>
         (function () {
+            // Legge i parametri dell’URL (es. ?model=nome.glb&ar)
             const params = new URLSearchParams(window.location.search);
             const model = params.get('model');
 
@@ -44,15 +48,19 @@
 
             const viewer = document.getElementById('viewer');
 
-            // Prefisso '/' in modo che il browser punti al root del repo
+            /* 
+             * Prefisso '/' in modo che il browser punti al root del repo
+             * (es. /myModel.glb).  Se il modello si trova in una
+             * cartella (es. assets/), usare '/assets/' + model
+             */
             viewer.src = '/' + model + '?t=' + Date.now();
 
-            // Se il caricamento fallisce, avvisiamo l’utente
+            // Notifica in caso di errore di caricamento
             viewer.addEventListener('error', () => {
                 alert('Impossibile caricare il modello ' + model);
             });
 
-            // (Opzionale) Mostriamo un messaggio di caricamento
+            // (Opzionale) Log di caricamento
             viewer.addEventListener('model-loading', () => {
                 console.log('Caricamento modello in corso...');
             });
