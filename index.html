@@ -1,45 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AR Viewer</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <title>AR Viewer Pro</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
-        body { margin: 0; font-family: sans-serif; }
-        model-viewer { width: 100vw; height: 100vh; background-color: #f0f0f0; }
-        #status { position: absolute; top: 10px; left: 10px; z-index: 100; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        body { margin: 0; background-color: #f0f0f0; font-family: sans-serif; }
+        #container { width: 100vw; height: 100vh; }
+        #status { position: absolute; top: 10px; left: 10px; background: white; padding: 10px; border-radius: 5px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
-    <div id="status">Inizializzazione...</div>
+    <div id="status">Caricamento motore 3D...</div>
+    <div id="container"></div>
 
-    <model-viewer id="viewer" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1" auto-rotate></model-viewer>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
 
-    <script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
         const status = document.getElementById('status');
-        const viewer = document.getElementById('viewer');
         const params = new URLSearchParams(window.location.search);
-        const model = params.get('model');
+        const modelName = params.get('model');
 
-        if (!model) {
-            status.innerHTML = "❌ Errore: Manca il nome del modello nell'URL.";
+        if (!modelName) {
+            status.innerHTML = "❌ Errore: Nessun modello specificato.";
         } else {
-            status.innerHTML = "🔍 Cerco il file: " + model;
-            
-            // Forziamo l'indirizzo assoluto per evitare dubbi
-            const modelUrl = window.location.origin + window.location.pathname.replace('index.html', '') + model + "?t=" + Date.now();
-            
-            viewer.src = modelUrl;
+            init();
+        }
 
-            viewer.addEventListener('load', () => {
-                status.style.display = 'none';
-                console.log("Modello caricato con successo");
-            });
+        function init() {
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
 
-            viewer.addEventListener('error', (ev) => {
-                console.error(ev);
-                status.innerHTML = "❌ ERRORE DI CARICAMENTO!<br>" +
-                                 "File: <a href='" + modelUrl + "'>" + model + "</a><br>" +
-                                 "Controlla se il link sopra scarica il file. Se lo scarica, il problema è il visualizzatore.";
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(2, 2, 2);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            const controls = new OrbitControls(camera, renderer.domElement);
+            
+            // Luci
+            scene.add(new THREE.AmbientLight(0xffffff, 2));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(5, 10, 7.5);
+            scene.add(dirLight);
+
+            const loader = new GLTFLoader();
+            const modelUrl = "./" + modelName + "?t=" + Date.now();
+
+            status.innerHTML = "📥 Download modello...";
+
+            loader.load(modelUrl, 
+                (gltf) => {
+                    scene.add(gltf.scene);
+                    
+                    // Centra automaticamente il modello di Inventor
+                    const box = new THREE.Box3().setFromObject(gltf.scene);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+                    
+                    gltf.scene.position.x += (gltf.scene.position.x - center.x);
+                    gltf.scene.position.y += (gltf.scene.position.y - center.y);
+                    gltf.scene.position.z += (gltf.scene.position.z - center.z);
+                    
+                    camera.position.set(size.length(), size.length(), size.length());
+                    controls.update();
+                    
+                    status.style.display = 'none';
+                },
+                (xhr) => {
+                    const percent = Math.round((xhr.loaded / xhr.total) * 100);
+                    status.innerHTML = `⏳ Caricamento: ${percent}%`;
+                },
+                (error) => {
+                    status.innerHTML = "❌ Errore Three.js: Il file non è un GLB valido.";
+                    console.error(error);
+                }
+            );
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             });
         }
     </script>
