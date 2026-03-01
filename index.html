@@ -12,7 +12,10 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const model = params.get('model');
+    const model = params.get('model');
+    if (model) {
+        // Il "+ '?t=' + new Date().getTime()" serve a fregare la cache di GitHub
+        document.getElementById('viewer').src = model + "?t=" + new Date().getTime();
         const viewer = document.getElementById('viewer');
         const status = document.getElementById('status');
 
