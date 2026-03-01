@@ -24,27 +24,26 @@
 <body>
 
 <model-viewer id="viewer"
-              src=""
-              ar
-              ar-modes="webxr scene-viewer quick-look"
-              ar-placement="floor"
-              camera-controls
-              touch-action="pan-y"
-              shadow-intensity="1"
-              auto-rotate
-              camera-orbit="45deg 75deg auto"
-              min-camera-orbit="auto auto auto"
-              max-camera-orbit="auto auto auto"
-              bounds="tight"
-              alt="Modello 3D Inventor">
-    <button slot="ar-button" class="ar-button">VEDI IN REALTÀ AUMENTATA</button>
+    src=""
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-placement="floor"
+    camera-controls
+    auto-rotate
+    shadow-intensity="1"
+    camera-orbit="45deg 75deg auto"
+    bounds="tight"
+    alt="Modello 3D Inventor">
+    <button slot="ar-button" class="ar-button">
+        VEDI IN REALTÀ AUMENTATA
+    </button>
 </model-viewer>
 
 <script>
-(function() {
+(() => {
     const viewer = document.getElementById('viewer');
 
-    // Prendi direttamente l'URL dal parametro "url" passato dall'AddIn
+    // Legge il parametro "url" dall'Add-in
     const urlParams = new URLSearchParams(window.location.search);
     const glbUrl = urlParams.get('url');
 
@@ -53,17 +52,24 @@
         return;
     }
 
-    // Imposta l'URL come src del viewer
+    // Imposta src dinamicamente
     viewer.src = glbUrl;
 
-    // Forza il ridimensionamento automatico appena il modello è caricato
+    // Ridimensionamento e centratura appena caricato
     viewer.addEventListener('load', () => {
-        console.log("Modello caricato con successo!");
-        viewer.updateFraming(); // centra e scala il modello
+        console.log("Modello caricato con successo:", glbUrl);
+        viewer.updateFraming();
     });
 
+    // Gestione errori caricamento
     viewer.addEventListener('error', (e) => {
-        alert("Errore caricamento file: " + glbUrl);
+        alert("Errore caricamento modello 3D: " + glbUrl);
+        console.error(e);
+    });
+
+    // Debug: log del pulsante AR
+    viewer.addEventListener('ar-status', (event) => {
+        console.log("Stato AR:", event.detail.status);
     });
 })();
 </script>
