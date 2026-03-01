@@ -33,31 +33,34 @@
     </model-viewer>
 
     <script>
-        (function () {
-            const params = new URLSearchParams(window.location.search);
-            const model = params.get('model');
+(async function () {
 
-            if (!model) {
-                alert('Nessun modello specificato.');
-                return;
-            }
+    const params = new URLSearchParams(window.location.search);
+    const model = params.get('model');
 
-            const viewer = document.getElementById('viewer');
+    if (!model) {
+        alert('Nessun modello specificato.');
+        return;
+    }
 
-            /*  
-             *  <‑‑ NO leading slash: this makes the path relative to
-             *  https://manise78.github.io/I-AR-Models/
-             */
-            viewer.src = model + '?t=' + Date.now();
+    const viewer = document.getElementById('viewer');
 
-            viewer.addEventListener('error', () => {
-                alert('Impossibile caricare il modello ' + model);
-            });
+    try {
+        const response = await fetch('./' + model + '?t=' + Date.now());
+        if (!response.ok) throw new Error("Errore HTTP");
 
-            viewer.addEventListener('model-loading', () => {
-                console.log('Caricamento modello in corso...');
-            });
-        })();
-    </script>
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        viewer.src = blobUrl;
+
+    } catch (err) {
+        alert('Impossibile scaricare il modello ' + model);
+        console.error(err);
+    }
+
+})();
+</script>
+    
 </body>
 </html>
