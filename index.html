@@ -52,16 +52,14 @@
 
     const viewer = document.getElementById('viewer');
 
-    // URL diretto al file .glb su GitHub Pages
-    const modelUrl = `https://manise78.github.io/I-AR-Models/${modelFile}?t=${Date.now()}`;
+    // Se i file .glb sono nella stessa cartella di index.html
+    const modelUrl = `${modelFile}?t=${Date.now()}`;
     viewer.src = modelUrl;
 
     viewer.addEventListener('error', () => {
         alert('Impossibile caricare il modello: ' + modelFile);
         console.error('Errore caricamento modello', modelUrl);
     });
-
-    // Il pulsante AR funziona automaticamente grazie a <model-viewer>
 })();
 </script>
 
