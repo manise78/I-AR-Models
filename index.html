@@ -7,52 +7,62 @@
             src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
     </script>
     <style>
-        body { margin: 0; background: #f0f0f0; }
-        model-viewer { width: 100vw; height: 100vh; }
+        body { margin: 0; }
+        model-viewer { width: 100vw; height: 100vh; background: #f0f0f0; }
+        button#arButton {
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .ar-button-container {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
+    <model-viewer id="viewer"
+                  ar
+                  ar-modes="webxr scene-viewer quick-look"
+                  camera-controls
+                  touch-action="pan-y"
+                  shadow-intensity="1">
+        <div class="ar-button-container" slot="ar-button">
+            <button id="arButton">VEDI IN AR</button>
+        </div>
+    </model-viewer>
 
-<model-viewer id="viewer"
-              src=""
-              ar
-              ar-modes="webxr scene-viewer quick-look"
-              camera-controls
-              touch-action="pan-y"
-              shadow-intensity="1">
-</model-viewer>
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const model = params.get('model');
 
-<script>
-(async function () {
+            if (!model) {
+                alert('Nessun modello specificato.');
+                return;
+            }
 
-    const params = new URLSearchParams(window.location.search);
-    const model = params.get('model');
+            const viewer = document.getElementById('viewer');
 
-    if (!model) {
-        alert('Nessun modello specificato.');
-        return;
-    }
+            // URL completo del modello su GitHub Pages
+            const modelUrl = `https://manise78.github.io/I-AR-Models/${model}?t=${Date.now()}`;
+            viewer.src = modelUrl;
 
-    try {
-        // Scarica il file GLB dal repository con cache-busting
-        const response = await fetch('./' + model + '?t=' + Date.now());
-        if (!response.ok) throw new Error("Errore HTTP durante il download del modello");
+            // Eventuale fallback per errori di caricamento
+            viewer.addEventListener('error', () => {
+                alert('Impossibile caricare il modello: ' + model);
+                console.error('Errore caricamento modello', modelUrl);
+            });
 
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-
-        const viewer = document.getElementById('viewer');
-        viewer.src = blobUrl;   // Imposta il modello dinamicamente
-        await viewer.updateComplete; // Attendi il caricamento
-        viewer.load();           // Aggiorna il pulsante AR
-
-    } catch (err) {
-        alert('Impossibile scaricare il modello: ' + model);
-        console.error(err);
-    }
-
-})();
-</script>
-
+            // AR Button funziona automaticamente grazie a <model-viewer>
+            // Nessuna azione JS aggiuntiva richiesta
+        })();
+    </script>
 </body>
 </html>
