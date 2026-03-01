@@ -27,12 +27,17 @@
               src=""
               ar
               ar-modes="webxr scene-viewer quick-look"
+              ar-placement="floor"
               camera-controls
               touch-action="pan-y"
-              shadow-intensity="1">
-    <button slot="ar-button" class="ar-button">
-        VEDI IN REALTÀ AUMENTATA
-    </button>
+              shadow-intensity="1"
+              auto-rotate
+              camera-orbit="45deg 75deg auto"
+              min-camera-orbit="auto auto auto"
+              max-camera-orbit="auto auto auto"
+              bounds="tight"
+              alt="Modello 3D Inventor">
+    <button slot="ar-button" class="ar-button">VEDI IN REALTÀ AUMENTATA</button>
 </model-viewer>
 
 <script>
@@ -50,6 +55,16 @@
 
     // Imposta l'URL come src del viewer
     viewer.src = glbUrl;
+
+    // Forza il ridimensionamento automatico appena il modello è caricato
+    viewer.addEventListener('load', () => {
+        console.log("Modello caricato con successo!");
+        viewer.updateFraming(); // centra e scala il modello
+    });
+
+    viewer.addEventListener('error', (e) => {
+        alert("Errore caricamento file: " + glbUrl);
+    });
 })();
 </script>
 
