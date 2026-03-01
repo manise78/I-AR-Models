@@ -1,38 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Visualizzatore AR</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <style>
-        body { margin: 0; }
-        model-viewer { width: 100vw; height: 100vh; background-color: #f0f0f0; }
-    </style>
-</head>
 <body>
+    <div id="status" style="position: absolute; top: 10px; left: 10px; z-index: 10; font-family: sans-serif; background: rgba(255,255,255,0.8); padding: 5px; border-radius: 5px;">
+        In attesa del modello...
+    </div>
+
     <model-viewer id="viewer" 
-        src="" 
-        ar 
-        ar-modes="webxr scene-viewer quick-look" 
-        camera-controls 
-        touch-action="pan-y" 
-        shadow-intensity="1"
+        ar ar-modes="webxr scene-viewer quick-look" 
+        camera-controls shadow-intensity="1" 
         auto-rotate
-        camera-orbit="45deg 75deg auto">
-        <div slot="ar-button" style="position: absolute; bottom: 16px; right: 16px;">
-            <button style="padding: 12px; border-radius: 8px; border: none; background: #007bff; color: white; font-weight: bold;">VEDI IN AR</button>
-        </div>
+        style="width: 100vw; height: 100vh; background-color: #f0f0f0;">
     </model-viewer>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const model = params.get('model');
+        const viewer = document.getElementById('viewer');
+        const status = document.getElementById('status');
+
         if (model) {
-            // Aggiungiamo un parametro casuale per evitare la cache (cache busting)
-            const cacheBuster = "?t=" + new Date().getTime();
-            document.getElementById('viewer').src = model + cacheBuster;
+            status.innerText = "Caricamento: " + model;
+            // Forziamo il caricamento assoluto
+            const modelUrl = window.location.origin + window.location.pathname.replace('index.html', '') + model + "?t=" + new Date().getTime();
+            
+            viewer.src = modelUrl;
+
+            viewer.addEventListener('load', () => {
+                status.style.display = 'none'; // Nascondi se ok
+            });
+
+            viewer.addEventListener('error', (ev) => {
+                status.innerHTML = "❌ Errore caricamento.<br>Verifica link: <a href='"+modelUrl+"'>Clicca qui</a>";
+                console.error(ev);
+            });
         } else {
-            alert("Nessun modello specificato nell'URL.");
+            status.innerText = "Nessun modello specificato.";
         }
     </script>
 </body>
-</html>
