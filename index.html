@@ -35,11 +35,11 @@ model-viewer {
     color: white;
     padding: 12px 24px;
     position: absolute;
-    bottom: 120px; 
+    bottom: 120px; /* solleva il pulsante */
     left: 50%;
     transform: translateX(-50%);
     font-weight: bold;
-    z-index: 10; 
+    z-index: 10;
 }
 </style>
 </head>
@@ -57,7 +57,8 @@ model-viewer {
     auto-rotate
     shadow-intensity="1"
     bounds="tight"
-    rotation="90deg 0deg 0deg"  <!-- ruota il modello in piedi -->
+    rotation="90deg 0deg 0deg"  <!-- forza modello in piedi -->
+    camera-orbit="0deg 75deg auto"
     alt="Modello 3D Inventor">
 
     <button slot="ar-button" class="ar-button">
@@ -70,6 +71,7 @@ model-viewer {
 (async function() {
 
     const viewer = document.getElementById('viewer');
+    const loader = document.getElementById('loader');
     const params = new URLSearchParams(window.location.search);
     const fileName = params.get('file');
 
@@ -86,12 +88,12 @@ model-viewer {
     viewer.addEventListener('load', () => {
         console.log("Modello caricato:", modelUrl);
         viewer.updateFraming();
-        document.getElementById('loader').style.display = 'none';
+        loader.style.display = "none";
     });
 
     viewer.addEventListener('error', () => {
         alert("Errore caricamento modello 3D:\n" + modelUrl);
-        document.getElementById('loader').style.display = 'none';
+        loader.style.display = "none";
     });
 
 })();
