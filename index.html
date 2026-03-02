@@ -35,7 +35,7 @@ model-viewer {
     color: white;
     padding: 12px 24px;
     position: absolute;
-    bottom: 120px; /* solleva il pulsante */
+    bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
     font-weight: bold;
@@ -57,8 +57,6 @@ model-viewer {
     auto-rotate
     shadow-intensity="1"
     bounds="tight"
-    rotation="0deg 90deg 0deg"  <!-- forza modello in piedi -->
-    camera-orbit="0deg 75deg auto"
     alt="Modello 3D Inventor">
 
     <button slot="ar-button" class="ar-button">
@@ -86,7 +84,14 @@ model-viewer {
     viewer.src = modelUrl;
 
     viewer.addEventListener('load', () => {
-        console.log("Modello caricato:", modelUrl);
+
+        // 🔧 ROTAZIONE REALE DEL MODELLO
+        const scene = viewer.model?.scene;
+        if (scene) {
+            scene.rotation.x = Math.PI / 2; // prova +90°
+            // se fosse ancora sbagliato prova -Math.PI / 2
+        }
+
         viewer.updateFraming();
         loader.style.display = "none";
     });
