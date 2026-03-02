@@ -87,14 +87,8 @@ model-viewer {
         console.log("Modello caricato:", modelUrl);
         loader.style.display = "none";
 
-        // Aggiorna framing
+        // Aggiorna framing senza modificare rotazione
         viewer.updateFraming();
-
-        // Ruota il modello se Inventor esporta sdraiato (90° sull'asse X)
-        const model = viewer.model;
-        if (model) {
-            model.rotation.x = -Math.PI / 2; // mette Z verticale
-        }
     });
 
     viewer.addEventListener('error', () => {
