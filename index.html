@@ -69,52 +69,26 @@ model-viewer {
 (async function() {
 
     const viewer = document.getElementById('viewer');
-    const loader = document.getElementById('loader');
     const params = new URLSearchParams(window.location.search);
     const fileName = params.get('file');
 
     if (!fileName) {
-        loader.innerText = "Errore: nessun modello specificato.";
+        alert("Nessun modello specificato.");
         return;
     }
 
-    // 🔧 URL BASE — DEVE CORRISPONDERE AL TUO REPO
     const baseUrl = "https://manise78.github.io/I-AR-Models/";
     const modelUrl = baseUrl + fileName;
 
-    // 🔁 Funzione retry per attendere GitHub Pages
-    async function waitForModel(url, attempts = 15, delay = 2000) {
-        for (let i = 0; i < attempts; i++) {
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                if (response.ok) return true;
-            } catch (e) {}
-            await new Promise(res => setTimeout(res, delay));
-        }
-        return false;
-    }
-
-    loader.innerText = "Verifica disponibilità modello...";
-
-    const exists = await waitForModel(modelUrl);
-
-    if (!exists) {
-        loader.innerText = "Errore: modello non ancora disponibile su GitHub Pages.";
-        return;
-    }
-
-    // 🚀 Carica il modello
     viewer.src = modelUrl;
 
     viewer.addEventListener('load', () => {
-        loader.style.display = "none";
-        viewer.updateFraming();
         console.log("Modello caricato:", modelUrl);
+        viewer.updateFraming();
     });
 
     viewer.addEventListener('error', () => {
-        loader.innerText = "Errore caricamento modello 3D.";
-        console.error("Errore caricamento:", modelUrl);
+        alert("Errore caricamento modello 3D:\n" + modelUrl);
     });
 
 })();
