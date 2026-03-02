@@ -88,8 +88,8 @@ model-viewer {
         // 🔧 ROTAZIONE REALE DEL MODELLO
         const scene = viewer.model?.scene;
         if (scene) {
-            scene.rotation.x = Math.PI / 2; // prova +90°
-            // se fosse ancora sbagliato prova -Math.PI / 2
+            scene.rotation.x = -Math.PI / 2;
+
         }
 
         viewer.updateFraming();
