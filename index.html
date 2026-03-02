@@ -57,6 +57,7 @@ model-viewer {
     auto-rotate
     shadow-intensity="1"
     bounds="tight"
+    rotation="-90deg 0deg 0deg"
     alt="Modello 3D Inventor">
 
     <button slot="ar-button" class="ar-button">
@@ -66,7 +67,7 @@ model-viewer {
 </model-viewer>
 
 <script>
-(async function() {
+(function() {
 
     const viewer = document.getElementById('viewer');
     const loader = document.getElementById('loader');
@@ -84,14 +85,6 @@ model-viewer {
     viewer.src = modelUrl;
 
     viewer.addEventListener('load', () => {
-
-        // 🔧 ROTAZIONE REALE DEL MODELLO
-        const scene = viewer.model?.scene;
-        if (scene) {
-            scene.rotation.x = -Math.PI / 2;
-
-        }
-
         viewer.updateFraming();
         loader.style.display = "none";
     });
