@@ -26,6 +26,7 @@ model-viewer {
     transform: translate(-50%, -50%);
     font-size: 18px;
     font-weight: bold;
+    z-index: 5;
 }
 
 .ar-button {
@@ -35,11 +36,11 @@ model-viewer {
     color: white;
     padding: 12px 24px;
     position: absolute;
-    bottom: 120px; /* prima era 80px, aumentalo per sollevarlo */
+    bottom: 120px; /* distanza dal bordo inferiore */
     left: 50%;
     transform: translateX(-50%);
     font-weight: bold;
-    z-index: 10; /* assicura che sia sopra altri elementi */
+    z-index: 10;
 }
 </style>
 </head>
@@ -58,22 +59,22 @@ model-viewer {
     shadow-intensity="1"
     bounds="tight"
     alt="Modello 3D Inventor">
-
     <button slot="ar-button" class="ar-button">
         VEDI IN REALTÀ AUMENTATA
     </button>
-
 </model-viewer>
 
 <script>
 (async function() {
 
     const viewer = document.getElementById('viewer');
+    const loader = document.getElementById('loader');
     const params = new URLSearchParams(window.location.search);
     const fileName = params.get('file');
 
     if (!fileName) {
         alert("Nessun modello specificato.");
+        loader.style.display = "none";
         return;
     }
 
@@ -84,11 +85,21 @@ model-viewer {
 
     viewer.addEventListener('load', () => {
         console.log("Modello caricato:", modelUrl);
+        loader.style.display = "none";
+
+        // Aggiorna framing
         viewer.updateFraming();
+
+        // Ruota il modello se Inventor esporta sdraiato (90° sull'asse X)
+        const model = viewer.model;
+        if (model) {
+            model.rotation.x = -Math.PI / 2; // mette Z verticale
+        }
     });
 
     viewer.addEventListener('error', () => {
         alert("Errore caricamento modello 3D:\n" + modelUrl);
+        loader.style.display = "none";
     });
 
 })();
