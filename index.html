@@ -58,9 +58,7 @@ model-viewer {
     auto-rotate
     shadow-intensity="1"
     bounds="tight"
-    alt="Modello 3D Inventor"
-    rotation="0 -90 0"
-    camera-orbit="0deg 75deg auto">
+    alt="Modello 3D Inventor">
 
     <button slot="ar-button" class="ar-button">
         VEDI IN REALTÀ AUMENTATA
@@ -87,11 +85,9 @@ model-viewer {
 
     viewer.src = modelUrl;
 
-    // Correzione orientamento: ruotiamo -90° sull'asse X per mettere Z verticale
     viewer.addEventListener('load', () => {
         console.log("Modello caricato:", modelUrl);
         viewer.updateFraming();
-        viewer.model.setAttribute('rotation', '-90 0 0'); // Z verticale
         loader.style.display = "none";
     });
 
