@@ -36,7 +36,7 @@ model-viewer {
     color: white;
     padding: 12px 24px;
     position: absolute;
-    bottom: 120px; /* distanza dal bordo inferiore */
+    bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
     font-weight: bold;
@@ -58,7 +58,8 @@ model-viewer {
     auto-rotate
     shadow-intensity="1"
     bounds="tight"
-    alt="Modello 3D Inventor">
+    alt="Modello 3D Inventor"
+    style="transform: rotateX(90deg);"> <!-- questa rotazione mette il modello in piedi -->
     <button slot="ar-button" class="ar-button">
         VEDI IN REALTÀ AUMENTATA
     </button>
@@ -86,8 +87,6 @@ model-viewer {
     viewer.addEventListener('load', () => {
         console.log("Modello caricato:", modelUrl);
         loader.style.display = "none";
-
-        // Aggiorna framing senza modificare rotazione
         viewer.updateFraming();
     });
 
