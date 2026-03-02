@@ -29,17 +29,17 @@ model-viewer {
 }
 
 .ar-button {
-    background-color: #0078D7;
-    border-radius: 10px;
+    background-color: #007bff;
+    border-radius: 8px;
     border: none;
     color: white;
-    padding: 14px 28px;
+    padding: 12px 24px;
     position: absolute;
-    bottom: 30px;
+    bottom: 80px; /* prima era 32px, aumentalo per sollevarlo */
     left: 50%;
     transform: translateX(-50%);
     font-weight: bold;
-    font-size: 16px;
+    z-index: 10; /* assicura che sia sopra altri elementi */
 }
 </style>
 </head>
