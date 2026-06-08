@@ -1,0 +1,49 @@
+name: Delete old AR models
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  delete-old-glb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete GLB files older than 30 days
+        run: |
+          RETENTION_DAYS=30
+          NOW=$(date +%s)
+          LIMIT=$((RETENTION_DAYS * 24 * 60 * 60))
+
+          DELETED=0
+
+          for FILE in *.glb; do
+            [ -e "$FILE" ] || continue
+
+            LAST_COMMIT_DATE=$(git log -1 --format=%ct -- "$FILE")
+            AGE=$((NOW - LAST_COMMIT_DATE))
+
+            if [ "$AGE" -gt "$LIMIT" ]; then
+              echo "Deleting expired AR model: $FILE"
+              git rm "$FILE"
+              DELETED=$((DELETED + 1))
+            fi
+          done
+
+          if [ "$DELETED" -gt 0 ]; then
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+            git commit -m "Delete expired AR models"
+            git push
+          else
+            echo "No expired AR models to delete."
+          fi
