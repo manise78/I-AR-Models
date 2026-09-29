@@ -60,7 +60,6 @@ model-viewer {
     shadow-softness="0.8"
     environment-image="neutral"
     bounds="tight"
-    orientation="0deg -90deg 0deg"
     alt="Modello 3D Inventor">
 
     <button slot="ar-button" class="ar-button">
@@ -83,9 +82,10 @@ model-viewer {
     }
 
     const baseUrl = "https://manise78.github.io/I-AR-Models/";
-    const modelUrl = baseUrl + fileName;
-
-    viewer.src = modelUrl;
+    // L'orientamento è già definito dal GLB pubblicato dall'add-in.
+    // Codifica il nome e richiedi una copia aggiornata a ogni apertura.
+    const modelUrl = new URL(encodeURIComponent(fileName), baseUrl);
+    modelUrl.searchParams.set('v', params.get('v') || Date.now().toString());
 
     viewer.addEventListener('load', () => {
         viewer.updateFraming();
@@ -96,6 +96,8 @@ model-viewer {
         alert("Errore caricamento modello 3D:\n" + modelUrl);
         loader.style.display = "none";
     });
+
+    viewer.src = modelUrl.href;
 
 })();
 </script>
